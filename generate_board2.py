@@ -9,7 +9,8 @@ import discord
 from discord.ext import commands
 import pandas as pd
 import eel
-
+#import tracemalloc
+#tracemalloc.start()
 
 eel.init('web')
 
@@ -17,13 +18,9 @@ client = discord.Client()
 
 @client.event
 async def on_ready():
+    messageToSend = "ciao!"
+    #await general_channel.send(messageToSend)
     eel.changeMessage('ok')
-    #general_channel = client.get_channel(815233775683502134)
-    pass
-    #815233775683502134
-    #817136161688387598
-    #await general_channel.send("Hello")
-    #x = 5
 
 
 
@@ -763,6 +760,10 @@ async def on_message(message):
                     #x = input()
 
 
+#@client.event
+#await client.logout()
+
+
 #client.run('ODE1MjI5NTUxNTMzNDkwMjI2.YDpXrw.bvORZjsUg76Q7LiNkecRvBCRL8o')
 #client.run('ODE1MjI5NTUxNTMzNDkwMjI2.YDpXrw.kL-QTRd-64UKAsrabYQCB9mkH8c')
 @eel.expose
@@ -774,5 +775,6 @@ def run_bot(x):
     except:
         eel.changeMessage('error')
         print("didn't work")
+        return 0
 
 eel.start('index.html',size = (305,120))
