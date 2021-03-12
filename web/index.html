@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <script src="eel.js"></script>
 <script src="main.js"></script>
@@ -9,12 +9,15 @@
 </head>
 <body>
 
-<form>
-    <img src="Chess-Knight.png" class="img1">
-    <label>Bot token:</label><br>
-  <input type="text" id="theBox">
-</form>
-<p id="theMessage" class="message">Bot not running</p>
+    <form id="theForm" style="float:right;">
+        <img src="Chess-Knight.png" class="img1">
+        <label id="label1">Bot token:</label><br>
+        <input type="text" id="theBox">
+        <label id="label2">Channel ID:</label><br>
+        <input type="text" id="theBox2">
+        <p id="theMessage" class="message">Bot not running</p>
+    </form>
+
 </body>
 <script>f();</script>
 <!--<script>changeMessage('errorj');</script>-->

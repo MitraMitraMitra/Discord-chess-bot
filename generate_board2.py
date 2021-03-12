@@ -3,67 +3,79 @@
 from PIL import Image, ImageDraw
 import random
 import copy
-import cv2 as cv
-import numpy as np
+#import cv2 as cv
+#import numpy as np
 import discord
 from discord.ext import commands
 import pandas as pd
 import eel
-#import tracemalloc
-#tracemalloc.start()
 
-eel.init('web')
+#def close_callback(route, websockets):
+    #print("Got here!")
+    #if not websockets:
+        #client.close()
+        #exit()
 
 client = discord.Client()
+eel.init('web')
+
+#client = discord.Client()
 
 @client.event
 async def on_ready():
+    global channelID
     messageToSend = "ciao!"
-    #await general_channel.send(messageToSend)
-    eel.changeMessage('ok')
+    try:
+        general_channel = client.get_channel(int(channelID))
+    except:
+        general_channel = None
+    if general_channel == None:
+        client.close()
+        exit()
+        eel.changeMessage('error2')
+    else:
+        await general_channel.send(messageToSend)
+        eel.changeMessage('ok')
 
 
 
-img = Image.open("board.jpg")
+img = Image.open("web/board.jpg")
 width, height = img.size
 img = img.convert('RGB')
 pixels=img.load()
 d=ImageDraw.Draw(img)
-numbers = Image.open("N3.png")
+numbers = Image.open("web/N3.png")
 numbers = numbers.convert('RGBA')
-#numbers = numbers.resize((50,50))
 img.paste(numbers,(0,80),numbers)
 img.paste(numbers,(880,80),numbers)
-letters = Image.open("L1.png")
+letters = Image.open("web/L1.png")
 letters = letters.convert('RGBA')
-#numbers = numbers.resize((50,50))
 img.paste(letters,(84,0),letters)
 img.paste(letters,(84,870),letters)
-black_Bishop = Image.open("pieces/blackBishop.png")
+black_Bishop = Image.open("web/pieces/blackBishop.png")
 black_Bishop = black_Bishop.resize((100,100))
-white_Bishop = Image.open("pieces/whiteBishop.png")
+white_Bishop = Image.open("web/pieces/whiteBishop.png")
 white_Bishop = white_Bishop.resize((100,100))
-black_Pawn = Image.open("pieces/blackPawn.png")
+black_Pawn = Image.open("web/pieces/blackPawn.png")
 black_Pawn = black_Pawn.resize((100,100))
-white_Pawn = Image.open("pieces/whitePawn.png")
+white_Pawn = Image.open("web/pieces/whitePawn.png")
 white_Pawn = white_Pawn.resize((100,100))
-black_Horse = Image.open("pieces/blackHorse.png")
+black_Horse = Image.open("web/pieces/blackHorse.png")
 black_Horse = black_Horse.resize((100,100))
-white_Horse = Image.open("pieces/whiteHorse.png")
+white_Horse = Image.open("web/pieces/whiteHorse.png")
 white_Horse = white_Horse.resize((100,100))
-black_Rook = Image.open("pieces/blackRook.png")
+black_Rook = Image.open("web/pieces/blackRook.png")
 black_Rook = black_Rook.resize((100,100))
-white_Rook = Image.open("pieces/whiteRook.png")
+white_Rook = Image.open("web/pieces/whiteRook.png")
 white_Rook = white_Rook.resize((100,100))
-black_Queen = Image.open("pieces/blackQueen.png")
+black_Queen = Image.open("web/pieces/blackQueen.png")
 black_Queen = black_Queen.resize((100,100))
-white_Queen = Image.open("pieces/whiteQueen.png")
+white_Queen = Image.open("web/pieces/whiteQueen.png")
 white_Queen = white_Queen.resize((100,100))
-black_King = Image.open("pieces/blackKing.png")
+black_King = Image.open("web/pieces/blackKing.png")
 black_King = black_King.resize((100,100))
-white_King = Image.open("pieces/whiteKing.png")
+white_King = Image.open("web/pieces/whiteKing.png")
 white_King = white_King.resize((100,100))
-
 
 
 class Bishop:
@@ -373,9 +385,7 @@ class King:
         for i in board:
             for j in i:
                 if j != None and j.check_if_this_move_is_legal((self.position[0],self.position[1])) == 'Yes':
-                    #print("I found that (",self.position[0],",",self.position[1],") IS in check.",sep='')
                     return 'Yes'
-        #print("I found that (", self.position[0], ",", self.position[1], ") IS NOT in check.", sep='')
         return 'No'
 
 
@@ -388,12 +398,9 @@ def is_player_in_checkmate(colour):
         for j in i:
             if j != None and j.colour == colour:
                 list_of_pieces.append(j)
-                #if str(type(j))[17:22] == 'Horse':
-                #    print("I FOUND A HORSE AT",j.position)
                 if str(type(j))[17:21] == 'King':
                     TheKing = j
     print(colour,"'s king is at (",TheKing.position[0],",",TheKing.position[1],").",sep='')
-    #for i in list_of_pieces:
     if 1==0:
         if str(type(i))[17:23] == 'Bishop':
             if i.colour == 'black':
@@ -438,47 +445,18 @@ def is_player_in_checkmate(colour):
                         x = i.position[0]
                         y = i.position[1]
                         piece = board[j][k]
-                        #print("Before the move:")
-                        #print("board[", x, "][", y, "]=", board[x][y])
-                        #print("board[", j, "][", k, "]=", board[j][k])
-                        #try:
-                            #print("piece.position =", piece.position)
-                            #except:
-                            #print("piece.position =", piece)
                         board[j][k] = i
                         i.position = (j,k)
                         board[x][y] = None
-                        #print("After the move:")
-                        #print("board[",x,"][",y,"]=",board[x][y])
-                        #print("board[",j,"][",k,"]=",board[j][k])
-                        #try:
-                            #print("piece.position =",piece.position)
-                            #except:
-                            #print("piece.position =",piece)
                         if TheKing.in_check() == 'No':
                             board[x][y] = i
                             board[x][y].position = (x,y)
                             board[j][k] = piece
-                            #print("After the undo:")
-                            #print("board[", x, "][", y, "]=", board[x][y])
-                            #print("board[", j, "][", k, "]=", board[j][k])
-                            #try:
-                            #    print("piece.position =", piece.position)
-                            #except:
-                            #    print("piece.position =", piece)
                             print("No, ",colour," is not in checkmate, he can still make the move (",i.position[0],",",i.position[1],") to (",j,",",k,").",sep='')
                             return 'No'
                         board[x][y] = i
                         board[x][y].position = (x, y)
                         board[j][k] = piece
-                        #print("After the undo:")
-                        #print("board[", x, "][", y, "]=", board[x][y])
-                        #print("board[", j, "][", k, "]=", board[j][k])
-                        #try:
-                        #    print("piece.position =", piece.position)
-                        #except:
-                        #    print("piece.position =", piece)
-                        #list_of_legal_moves.append((i,j,k))
         print("count =",count)
 
 
@@ -517,8 +495,6 @@ def convert(x):
 
     return code
 
-print(convert("a2 to h5"))
-
 
 def reset():
     global turn
@@ -556,12 +532,14 @@ for i in range(0,8):
             board[i][j] = Pawn('white',(i,j))
 empty_board = copy.deepcopy(img)
 
+channelID = None
 turn = 'white'
 game = 'over'
 check = None
 @client.event
 async def on_message(message):
-    general_channel = client.get_channel(815233775683502134)
+    global channelID
+    general_channel = client.get_channel(int(channelID))
     global game
     global check
     stop = 0
@@ -623,9 +601,8 @@ async def on_message(message):
                             else:
                                 img.paste(white_King, (100 * (1 + j.position[0]), 100 * (1 + j.position[1])),
                                           white_King)
-                # img.show()
-                img.save("image_to_show.jpg")
-                await general_channel.send(file=discord.File('image_to_show.jpg'))
+                img.save("web/image_to_show.jpg")
+                await general_channel.send(file=discord.File('web/image_to_show.jpg'))
 
         elif game == 'over':
             messageToSend = "There is no game going on. You can start one with the command 'chess start'."
@@ -639,7 +616,6 @@ async def on_message(message):
         elif stop == 0 and len(message.content) == 14:
             move = message.content[6:14]
             global turn
-            #check = None
             if str(message.author)[0:12] != 'JP_Chess_Bot':
 
                 if convert(move) == None:
@@ -665,11 +641,8 @@ async def on_message(message):
                                                 KingPosition[0] = board[i][j].position[0]
                                                 KingPosition[1] = board[i][j].position[1]
                                     if board[KingPosition[0]][KingPosition[1]].in_check() != 'Yes':
-                                        #board[y[0]][y[1]] = board[y[2]][y[3]]
-                                        #board[y[0]][y[1]].position = (y[0],y[1])
-                                        #board[y[2]][y[3]] = piece
-                                    #else:
                                         check = None
+
                                     board[y[0]][y[1]] = board[y[2]][y[3]]
                                     board[y[0]][y[1]].position = (y[0], y[1])
                                     board[y[2]][y[3]] = piece
@@ -729,9 +702,9 @@ async def on_message(message):
                                                     img.paste(black_King,(100*(1+j.position[0]),100*(1+j.position[1])), black_King)
                                                 else:
                                                     img.paste(white_King, (100*(1+j.position[0]),100*(1+j.position[1])), white_King)
-                                    #img.show()
-                                    img.save("image_to_show.jpg")
-                                    await general_channel.send(file=discord.File('image_to_show.jpg'))
+
+                                    img.save("web/image_to_show.jpg")
+                                    await general_channel.send(file=discord.File('web/image_to_show.jpg'))
                                     if is_player_in_checkmate(turn) != 'No':
                                         if turn == 'black':
                                             messageToSend = "CHECKMATE. WHITE WINS. GAME OVER."
@@ -754,27 +727,29 @@ async def on_message(message):
                             print(messageToSend)
                             await general_channel.send(messageToSend)
                     else:
-                        messageToSend = "There is no piece at ("+str(y[0])+","+str(y[1])+")."
+                        letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+                        messageToSend = "There is no piece at "+letters[y[0]]+str(8-y[1])+"."
                         print(messageToSend)
                         await general_channel.send(messageToSend)
-                    #x = input()
 
-
-#@client.event
-#await client.logout()
 
 
 #client.run('ODE1MjI5NTUxNTMzNDkwMjI2.YDpXrw.bvORZjsUg76Q7LiNkecRvBCRL8o')
 #client.run('ODE1MjI5NTUxNTMzNDkwMjI2.YDpXrw.kL-QTRd-64UKAsrabYQCB9mkH8c')
 @eel.expose
-def run_bot(x):
-    print("I will now run the bot with ID",x)
+def run_bot(x,y):
+    global channelID
+    print("I will now run the bot with token",x,"in the channel",y)
     try:
+        channelID = y
+        #client = discord.Client()
         client.run(x)
-
     except:
-        eel.changeMessage('error')
+        eel.changeMessage('error1')
         print("didn't work")
-        return 0
 
-eel.start('index.html',size = (305,120))
+try:
+    eel.start('index.html',size = (325,160))
+except:
+    print("Got here!")
+print("Got here2!")

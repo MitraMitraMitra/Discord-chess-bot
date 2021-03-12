@@ -1,7 +1,7 @@
 
 
 .img1 {
-    width: 21%;
+    width: 34%;
     height: auto;
     float: left;
 }
@@ -10,5 +10,6 @@
     font-style: italic;
     color: gray;
     margin-top: 2px;
-    margin-left: 40px;
+    margin-left: 78px;
+    /*float: right;*/
 }
