@@ -3,18 +3,11 @@
 from PIL import Image, ImageDraw
 import random
 import copy
-#import cv2 as cv
-#import numpy as np
 import discord
 from discord.ext import commands
 import pandas as pd
 import eel
 
-#def close_callback(route, websockets):
-    #print("Got here!")
-    #if not websockets:
-        #client.close()
-        #exit()
 
 client = discord.Client()
 eel.init('web')
@@ -24,7 +17,11 @@ eel.init('web')
 @client.event
 async def on_ready():
     global channelID
-    messageToSend = "ciao!"
+    messageToSend = "The Chess bot is online. Commands:\n\n" \
+                    "'chess start': starts a game\n\n" \
+                    "'chess [a-h][1-8] to [a-h][1-8]': moves piece [a-h][1-8] to [a-h][1-8]\n" \
+                    "For example, 'chess f2 to f3\n\n" \
+                    "'chess end': ends a game"
     try:
         general_channel = client.get_channel(int(channelID))
     except:
@@ -734,8 +731,6 @@ async def on_message(message):
 
 
 
-#client.run('ODE1MjI5NTUxNTMzNDkwMjI2.YDpXrw.bvORZjsUg76Q7LiNkecRvBCRL8o')
-#client.run('ODE1MjI5NTUxNTMzNDkwMjI2.YDpXrw.kL-QTRd-64UKAsrabYQCB9mkH8c')
 @eel.expose
 def run_bot(x,y):
     global channelID

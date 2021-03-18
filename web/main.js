@@ -79,7 +79,7 @@ function changeMessage(x) {
         Message.style.fontWeight = 'bold';
         Message.style.fontStyle = 'normal';
         Message.style.marginLeft = '40px';
-        Message.innerText = "Bot has started running. To stop it, just close this window.";
+        Message.innerText = "Bot has started running.";
     }
 }
 eel.expose(changeMessage);
